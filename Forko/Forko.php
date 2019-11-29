@@ -9,7 +9,7 @@ namespace Bugo\Forko;
  * @author Bugo <bugo@dragomano.ru>
  * @copyright 2019 Bugo
  *
- * @version 0.1
+ * @version 0.2
  */
 
 class Forko
@@ -41,7 +41,7 @@ class Forko
         } elseif ($storybb) {
             $engine = 'StoryBB';
         } else {
-            $engine = 'SMF2';
+            $engine = 'SMF';
         }
 
         return $engine;

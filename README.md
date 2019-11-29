@@ -5,19 +5,16 @@ Copy `Forko` dir into your forum root dir, then use _Forko_ class in your apps.
 
 ### Example.php
 ```
+// At first, require SSI.php of your forum
 require_once(dirname(__FILE__) . '/SSI.php');
 
-$basepath = $boarddir . '/Forko';
-
-require_once($basepath . '/Forko.php');
+$basepath = dirname(__FILE__) . '/Forko';
+require_once($basepath . '/vendor/autoload.php');
 
 $forko = new \Bugo\Forko\Forko();
 $engine = $forko->getEngine();
 
 $adapter_name = 'Adapter' . $engine;
-require_once($basepath . '/Adapters/IAdapter.php');
-require_once($basepath . '/Adapters/' . $adapter_name . '.php');
-
 $adapter = '\Bugo\Forko\Adapters\\' . $adapter_name;
 ```
 ```

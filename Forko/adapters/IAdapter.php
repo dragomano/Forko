@@ -9,7 +9,7 @@ namespace Bugo\Forko\Adapters;
  * @author Bugo <bugo@dragomano.ru>
  * @copyright 2019 Bugo
  *
- * @version 0.1
+ * @version 0.2
  */
 
 interface IAdapter

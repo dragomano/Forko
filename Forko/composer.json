@@ -1,0 +1,17 @@
+{
+    "name": "bugo/forko",
+    "description": "Classes to work with DB via SMF forks",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Bugo",
+            "email": "bugo@dragomano.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bugo\\Forko\\": "../Forko/"
+        }
+    },
+    "require": {}
+}
