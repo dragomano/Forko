@@ -9,7 +9,7 @@ namespace Bugo\Forko\Adapters;
  * @author Bugo <bugo@dragomano.ru>
  * @copyright 2019 Bugo
  *
- * @version 0.2
+ * @version 0.3
  */
 
 if (!defined('ELK'))
@@ -27,7 +27,7 @@ class AdapterElkarte implements IAdapter
 	 * @param array $values
 	 * @param array $parameters
 	 * @param boolean $replace
-	 * @return void
+	 * @return int
 	 */
 	public static function insert($table = '', $fields = [], $values = [], $parameters = ['id'], $replace = false)
 	{
@@ -51,15 +51,15 @@ class AdapterElkarte implements IAdapter
 	 *
 	 * @param string $table
 	 * @param array $fields
-	 * @param string $join
 	 * @param string $conditions
+	 * @param array $parameters
+	 * @param string $join
 	 * @param string $order
 	 * @param string $limit
-	 * @param array $parameters
 	 * @param string $output // assoc|row
 	 * @return mixed
 	 */
-	public static function findAll($table = '', $fields = [], $join = '', $conditions = '', $order = '', $limit = '', $parameters = [], $output = 'assoc')
+	public static function findAll($table = '', $fields = [], $conditions = '', $parameters = [], $join = '', $order = '', $limit = '', $output = 'assoc')
 	{
 		if (empty($table))
 			return false;
@@ -107,12 +107,12 @@ class AdapterElkarte implements IAdapter
 	 *
 	 * @param string $table
 	 * @param array $fields
-	 * @param string $join
 	 * @param string $conditions
 	 * @param array $parameters
-	 * @return void
+	 * @param string $join
+	 * @return int
 	 */
-	public static function update($table = '', $fields = [], $join = '', $conditions = '', $parameters = [])
+	public static function update($table = '', $fields = [], $conditions = '', $parameters = [], $join = '')
 	{
 		if (empty($table) || empty($fields))
 			return false;
@@ -141,7 +141,7 @@ class AdapterElkarte implements IAdapter
 	 * @param string $table
 	 * @param string $conditions
 	 * @param array $parameters
-	 * @return void
+	 * @return int
 	 */
 	public static function delete($table = '', $conditions = '', $parameters = [])
 	{

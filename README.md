@@ -29,7 +29,7 @@ var_dump($all_topics);
 ```
 ```
 // UPDATE FROM {db_prefix}topics SET title = "New title" WHERE id_topic = 1
-$result = $adapter::update('topics', ['is_sticky' => '{int:is_sticky}'], '', 'WHERE id_topic = 1', ['is_sticky' => 1]);
+$result = $adapter::update('topics', ['is_sticky' => '{int:is_sticky}'], 'WHERE id_topic = 1', ['is_sticky' => 1]);
 var_dump($result);
 ```
 ```

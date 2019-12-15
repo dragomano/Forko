@@ -9,7 +9,7 @@ namespace Bugo\Forko;
  * @author Bugo <bugo@dragomano.ru>
  * @copyright 2019 Bugo
  *
- * @version 0.2
+ * @version 0.3
  */
 
 class Forko
