@@ -1,54 +1,32 @@
 <?php
 
-namespace Bugo\Forko;
-
 /**
  * Forko.php
  *
  * @package Forko
  * @author Bugo <bugo@dragomano.ru>
  * @copyright 2019 Bugo
- *
  * @version 0.3
  */
 
-class Forko
+namespace Bugo\Forko;
+
+use JetBrains\PhpStorm\Pure;
+
+final class Forko
 {
-    private $engine;
+	public string $adapterName;
 
-    public function __construct($engine = '')
-    {
-        if (!empty($engine)) {
-            $this->engine = $engine;
-        } else {
-            $this->engine = $this->detectEngine();
-        }
-    }
+    #[Pure] public function __construct(private string $engine = 'smf') {}
 
-    private function detectEngine()
-    {
-        $wedge   = defined('WEDGE');
-        $elkarte = defined('ELK');
-        $portamx = defined('PMX');
-        $storybb = defined('STORYBB');
-
-        if ($wedge) {
-            $engine = 'Wedge';
-        } elseif ($elkarte) {
-            $engine = 'Elkarte';
-        } elseif ($portamx) {
-            $engine = 'PortaMx';
-        } elseif ($storybb) {
-            $engine = 'StoryBB';
-        } else {
-            $engine = 'SMF';
-        }
-
-        return $engine;
-    }
-
-    public function getEngine()
-    {
-        return $this->engine;
+    public function run()
+	{
+        $this->adapterName = match ($this->engine) {
+			'smf' => 'SMF',
+			'wedge' => 'Wedge',
+			'elk', 'elkarte' => 'Elkarte',
+			'pmx', 'portamx' => 'PortaMx',
+			'sbb', 'storybb' => 'StoryBB',
+		};
     }
 }
