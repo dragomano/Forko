@@ -1,7 +1,7 @@
 # Work with Database via SMF forks
 
 ## Install
-`composer install bugo/forko`
+`composer require bugo/forko`
 
 ### Example
 ```php
