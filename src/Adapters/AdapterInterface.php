@@ -4,10 +4,12 @@
  * AdapterInterface.php
  *
  * @package Forko
+ * @link https://github.com/dragomano/Forko
  * @author Bugo <bugo@dragomano.ru>
- * @copyright 2021 Bugo
+ * @copyright 2019-2023 Bugo
+ * @license https://github.com/dragomano/Forko/blob/master/LICENSE The MIT License
  *
- * @version 0.4
+ * @version 0.5
  */
 
 namespace Bugo\Forko\Adapters;

@@ -1,0 +1,22 @@
+{
+    "name": "bugo/forko",
+    "description": "Class to work with Database via SMF forks",
+    "type": "library",
+    "keywords": ["forko", "database", "smf", "elkarte", "storybb", "wedge", "portamx"],
+    "homepage": "https://github.com/dragomano/Forko",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bugo",
+            "email": "bugo@dragomano.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bugo\\Forko\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0"
+    }
+}

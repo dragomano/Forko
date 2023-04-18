@@ -1,24 +1,23 @@
 <?php
 
 /**
- * PortaMxAdapter.php
+ * ElkarteAdapter.php
  *
  * @package Forko
+ * @link https://github.com/dragomano/Forko
  * @author Bugo <bugo@dragomano.ru>
- * @copyright 2021 Bugo
+ * @copyright 2019-2023 Bugo
+ * @license https://github.com/dragomano/Forko/blob/master/LICENSE The MIT License
  *
- * @version 0.4
+ * @version 0.5
  */
 
 namespace Bugo\Forko\Adapters;
 
-if (! defined('PMX'))
-	die('No direct access...');
+use function database;
 
-final class PortaMxAdapter extends AbstractAdapter
+class ElkarteAdapter extends AbstractAdapter
 {
-	use CommonMethods;
-
 	/**
 	 * Wrapper to insert a new row into the specified table
 	 */
@@ -27,15 +26,14 @@ final class PortaMxAdapter extends AbstractAdapter
 		if (empty($fields) || empty($values))
 			return false;
 
-		$this->db['db_insert']($replace ? 'replace' : 'insert',
+		$this->db->insert($replace ? 'replace' : 'insert',
 			'{db_prefix}' . $table,
 			$fields,
 			$values,
-			$parameters,
-			1
+			$parameters
 		);
 
-		return $this->db['db_insert_id']('{db_prefix}' . $table);
+		return $this->db->insert_id('{db_prefix}' . $table, $parameters[0]);
 	}
 
 	/**
@@ -53,7 +51,7 @@ final class PortaMxAdapter extends AbstractAdapter
 			$limit = 'LIMIT ' . $limit;
 		}
 
-		$request = $this->db['db_query']('', '
+		$request = $this->db->query('', '
 			SELECT ' . $columns . '
 			FROM {db_prefix}' . $table . ($join ? '
 				' . $join : '') . ($conditions ? '
@@ -65,13 +63,13 @@ final class PortaMxAdapter extends AbstractAdapter
 
 		if ($output === 'assoc') {
 			$result = [];
-			while ($row = $this->db['db_fetch_assoc']($request))
+			while ($row = $this->db->fetch_assoc($request))
 				$result[] = $row;
 		} else {
-			$result = $this->db['db_fetch_row']($request);
+			$result = $this->db->fetch_row($request);
 		}
 
-		$this->db['db_free_result']($request);
+		$this->db->free_result($request);
 
 		return $result;
 	}
@@ -89,7 +87,7 @@ final class PortaMxAdapter extends AbstractAdapter
 			$columns[] = "$key = $value";
 		}
 
-		$this->db['db_query']('', '
+		$this->db->query('', '
 			UPDATE {db_prefix}' . $table . ($join ? '
 				' . $join : '') . '
 			SET ' . implode(', ', $columns) . ($conditions ? '
@@ -97,7 +95,7 @@ final class PortaMxAdapter extends AbstractAdapter
 			$parameters
 		);
 
-		return $this->db['db_affected_rows']();
+		return $this->db->affected_rows();
 	}
 
 	/**
@@ -105,12 +103,12 @@ final class PortaMxAdapter extends AbstractAdapter
 	 */
 	public function delete(string $table, string $conditions = '', array $parameters = []): int
 	{
-		$this->db['db_query']('', '
+		$this->db->query('', /** @lang text */ '
 			DELETE FROM {db_prefix}' . $table . ($conditions ? '
 			' . $conditions : ''),
 			$parameters
 		);
 
-		return $this->db['db_affected_rows']();
+		return $this->db->affected_rows();
 	}
 }

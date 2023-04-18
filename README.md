@@ -1,57 +1,56 @@
-# Work with DB via SMF forks
+# Work with Database via SMF forks
 
 ## Install
-Copy `Forko` dir into your forum root dir, then use _Forko_ class in your apps.
+`composer install bugo/forko`
 
-### Example.php
-```
+### Example
+```php
 // At first, require SSI.php of your forum (or autoload.php of your engine)
 require_once(dirname(__FILE__) . '/SSI.php');
 
-$basepath = dirname(__FILE__) . '/Forko';
-require_once($basepath . '/vendor/autoload.php');
+// Then require autoload.php from this package
+require_once(__DIR__ . '/vendor/autoload.php');
 
-// Elkarte
-$name = 'elkarte';
-$db = database();
-
-// SMF
+// Define SMF
 $name = 'smf';
 $db = $smcFunc;
 
-// StoryBB
-$name = 'sbb';
-$db = $smcFunc['db'];
-
-// PortaMx
-$name = 'pmx';
-$db = $pmxcFunc;
-
-// Wedge
+// ... or Wedge
 $name = 'wedge';
 $db = new wesql;
 
-$forko = new \Bugo\Forko\Forko($name);
-$engine = $forko->run;
+// ... or Elkarte
+$name = 'elkarte';
+$db = database();
 
-$adapter = '\Bugo\Forko\Adapters\\' . $engine->adapterName . 'Adapter'($db);
+// ... or PortaMx
+$name = 'pmx';
+$db = $pmxcFunc;
+
+// ... or StoryBB
+$name = 'sbb';
+$db = $smcFunc['db'];
+
+// And now get the adapter
+$forko = new \Bugo\Forko\Forko($name);
+$adapter = '\Bugo\Forko\Adapters\\' . $forko->getAdapterName() . 'Adapter'($db);
 ```
-```
-// INSERT INTO {db_prefix}calendar_holidays (event_date, title) VALUES('2020-01-01', 'The Event Name')
-$result = $note_id = $adapter->insert('calendar_holidays', ['event_date' => 'string', 'title' => 'string'], ['2020-01-01', 'The Event Name'], ['id_holiday']);
-var_dump($result);
-```
-```
+```php
 // SELECT * FROM {db_prefix}topics
 $all_topics = $adapter->findAll('topics');
 var_dump($all_topics);
 ```
+```php
+// INSERT INTO {db_prefix}calendar_holidays (event_date, title) VALUES('2020-01-01', 'The Event Name')
+$result = $note_id = $adapter->insert('calendar_holidays', ['event_date' => 'string', 'title' => 'string'], ['2020-01-01', 'The Event Name'], ['id_holiday']);
+var_dump($result);
 ```
+```php
 // UPDATE FROM {db_prefix}topics SET title = "New title" WHERE id_topic = 1
 $result = $adapter->update('topics', ['is_sticky' => '{int:is_sticky}'], 'WHERE id_topic = 1', ['is_sticky' => 1]);
 var_dump($result);
 ```
-```
+```php
 // DELETE FROM {db_prefix}calendar_holidays WHERE id_holiday = $note_id
 $result = $adapter->delete('calendar_holidays', 'WHERE id_holiday = {int:id}', ['id' => $note_id]);
 var_dump($result);

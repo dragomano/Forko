@@ -1,26 +1,23 @@
 <?php
 
 /**
- * ElkarteAdapter.php
+ * WedgeAdapter.php
  *
  * @package Forko
+ * @link https://github.com/dragomano/Forko
  * @author Bugo <bugo@dragomano.ru>
- * @copyright 2021 Bugo
+ * @copyright 2019-2023 Bugo
+ * @license https://github.com/dragomano/Forko/blob/master/LICENSE The MIT License
  *
- * @version 0.4
+ * @version 0.5
  */
 
 namespace Bugo\Forko\Adapters;
 
-use function \database;
+use wesql;
 
-if (! defined('ELK'))
-	die('No direct access...');
-
-final class ElkarteAdapter extends AbstractAdapter
+class WedgeAdapter extends AbstractAdapter
 {
-	use CommonMethods;
-
 	/**
 	 * Wrapper to insert a new row into the specified table
 	 */
@@ -29,14 +26,13 @@ final class ElkarteAdapter extends AbstractAdapter
 		if (empty($fields) || empty($values))
 			return false;
 
-		$this->db->insert($replace ? 'replace' : 'insert',
+		$this->db::insert($replace ? 'replace' : 'insert',
 			'{db_prefix}' . $table,
 			$fields,
-			$values,
-			$parameters
+			$values
 		);
 
-		return $this->db->insert_id('{db_prefix}' . $table, $parameters[0]);
+		return $this->db::insert_id();
 	}
 
 	/**
@@ -54,7 +50,7 @@ final class ElkarteAdapter extends AbstractAdapter
 			$limit = 'LIMIT ' . $limit;
 		}
 
-		$request = $this->db->query('', '
+		$request = $this->db::query('
 			SELECT ' . $columns . '
 			FROM {db_prefix}' . $table . ($join ? '
 				' . $join : '') . ($conditions ? '
@@ -66,13 +62,13 @@ final class ElkarteAdapter extends AbstractAdapter
 
 		if ($output === 'assoc') {
 			$result = [];
-			while ($row = $this->db->fetch_assoc($request))
+			while ($row = $this->db::fetch_assoc($request))
 				$result[] = $row;
 		} else {
-			$result = $this->db->fetch_row($request);
+			$result = $this->db::fetch_row($request);
 		}
 
-		$this->db->free_result($request);
+		$this->db::free_result($request);
 
 		return $result;
 	}
@@ -90,7 +86,7 @@ final class ElkarteAdapter extends AbstractAdapter
 			$columns[] = "$key = $value";
 		}
 
-		$this->db->query('', '
+		$this->db::query('
 			UPDATE {db_prefix}' . $table . ($join ? '
 				' . $join : '') . '
 			SET ' . implode(', ', $columns) . ($conditions ? '
@@ -98,7 +94,7 @@ final class ElkarteAdapter extends AbstractAdapter
 			$parameters
 		);
 
-		return $this->db->affected_rows();
+		return $this->db::affected_rows();
 	}
 
 	/**
@@ -106,12 +102,12 @@ final class ElkarteAdapter extends AbstractAdapter
 	 */
 	public function delete(string $table, string $conditions = '', array $parameters = []): int
 	{
-		$this->db->query('', '
+		$this->db::query(/** @lang text */ '
 			DELETE FROM {db_prefix}' . $table . ($conditions ? '
 			' . $conditions : ''),
 			$parameters
 		);
 
-		return $this->db->affected_rows();
+		return $this->db::affected_rows();
 	}
 }

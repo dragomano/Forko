@@ -6,19 +6,16 @@ namespace Bugo\Forko\Adapters;
  * StoryBBAdapter.php
  *
  * @package Forko
+ * @link https://github.com/dragomano/Forko
  * @author Bugo <bugo@dragomano.ru>
- * @copyright 2021 Bugo
+ * @copyright 2019-2023 Bugo
+ * @license https://github.com/dragomano/Forko/blob/master/LICENSE The MIT License
  *
- * @version 0.4
+ * @version 0.5
  */
 
-if (! defined('STORYBB'))
-	die('No direct access...');
-
-final class StoryBBAdapter extends AbstractAdapter
+class StoryBBAdapter extends AbstractAdapter
 {
-	use CommonMethods;
-
 	/**
 	 * Wrapper to insert a new row into the specified table
 	 */
@@ -103,7 +100,7 @@ final class StoryBBAdapter extends AbstractAdapter
 	 */
 	public function delete(string $table, string $conditions = '', array $parameters = []): int
 	{
-		$this->db->query('', '
+		$this->db->query('', /** @lang text */ '
 			DELETE FROM {db_prefix}' . $table . ($conditions ? '
 			' . $conditions : ''),
 			$parameters

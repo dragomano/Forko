@@ -1,26 +1,21 @@
 <?php
 
 /**
- * WedgeAdapter.php
+ * SMFAdapter.php
  *
  * @package Forko
+ * @link https://github.com/dragomano/Forko
  * @author Bugo <bugo@dragomano.ru>
- * @copyright 2021 Bugo
+ * @copyright 2019-2023 Bugo
+ * @license https://github.com/dragomano/Forko/blob/master/LICENSE The MIT License
  *
- * @version 0.4
+ * @version 0.5
  */
 
 namespace Bugo\Forko\Adapters;
 
-use \wesql;
-
-if (! defined('WEDGE'))
-	die('No direct access...');
-
-final class WedgeAdapter extends AbstractAdapter
+class SMFAdapter extends AbstractAdapter
 {
-	use CommonMethods;
-
 	/**
 	 * Wrapper to insert a new row into the specified table
 	 */
@@ -29,13 +24,13 @@ final class WedgeAdapter extends AbstractAdapter
 		if (empty($fields) || empty($values))
 			return false;
 
-		$this->db::insert($replace ? 'replace' : 'insert',
+		return $this->db['db_insert']($replace ? 'replace' : 'insert',
 			'{db_prefix}' . $table,
 			$fields,
-			$values
+			$values,
+			$parameters,
+			1
 		);
-
-		return $this->db::insert_id();
 	}
 
 	/**
@@ -53,7 +48,7 @@ final class WedgeAdapter extends AbstractAdapter
 			$limit = 'LIMIT ' . $limit;
 		}
 
-		$request = $this->db::query('
+		$request = $this->db['db_query']('', '
 			SELECT ' . $columns . '
 			FROM {db_prefix}' . $table . ($join ? '
 				' . $join : '') . ($conditions ? '
@@ -65,13 +60,13 @@ final class WedgeAdapter extends AbstractAdapter
 
 		if ($output === 'assoc') {
 			$result = [];
-			while ($row = $this->db::fetch_assoc($request))
+			while ($row = $this->db['db_fetch_assoc']($request))
 				$result[] = $row;
 		} else {
-			$result = $this->db::fetch_row($request);
+			$result = $this->db['db_fetch_row']($request);
 		}
 
-		$this->db::free_result($request);
+		$this->db['db_free_result']($request);
 
 		return $result;
 	}
@@ -89,7 +84,7 @@ final class WedgeAdapter extends AbstractAdapter
 			$columns[] = "$key = $value";
 		}
 
-		$this->db::query('
+		$this->db['db_query']('', '
 			UPDATE {db_prefix}' . $table . ($join ? '
 				' . $join : '') . '
 			SET ' . implode(', ', $columns) . ($conditions ? '
@@ -97,7 +92,7 @@ final class WedgeAdapter extends AbstractAdapter
 			$parameters
 		);
 
-		return $this->db::affected_rows();
+		return $this->db['db_affected_rows']();
 	}
 
 	/**
@@ -105,12 +100,12 @@ final class WedgeAdapter extends AbstractAdapter
 	 */
 	public function delete(string $table, string $conditions = '', array $parameters = []): int
 	{
-		$this->db::query('
+		$this->db['db_query']('', /** @lang text */ '
 			DELETE FROM {db_prefix}' . $table . ($conditions ? '
 			' . $conditions : ''),
 			$parameters
 		);
 
-		return $this->db::affected_rows();
+		return $this->db['db_affected_rows']();
 	}
 }
