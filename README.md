@@ -33,7 +33,8 @@ $db = $smcFunc['db'];
 
 // And now get the adapter
 $forko = new \Bugo\Forko\Forko($name);
-$adapter = '\Bugo\Forko\Adapters\\' . $forko->getAdapterName() . 'Adapter'($db);
+$adapterName = '\Bugo\Forko\Adapters\\' . $forko->getAdapterName() . 'Adapter';
+$adapter = new $adapterName($db);
 ```
 ```php
 // SELECT * FROM {db_prefix}topics
