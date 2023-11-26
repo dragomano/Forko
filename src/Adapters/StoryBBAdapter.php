@@ -11,7 +11,7 @@ namespace Bugo\Forko\Adapters;
  * @copyright 2019-2023 Bugo
  * @license https://github.com/dragomano/Forko/blob/master/LICENSE The MIT License
  *
- * @version 0.5
+ * @version 0.5.1
  */
 
 class StoryBBAdapter extends AbstractAdapter
@@ -107,5 +107,14 @@ class StoryBBAdapter extends AbstractAdapter
 		);
 
 		return $this->db->affected_rows();
+	}
+
+	/**
+	 * Wrapper to process transactions
+	 * @string $type begin|rollback|commit
+	 */
+	public function transaction(string $type = 'commit'): bool
+	{
+		return (bool) $this->db->transaction($type);
 	}
 }
