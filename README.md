@@ -1,4 +1,9 @@
-# Work with Database in custom scripts via SMF and its forks
+# Wrappers for SMF and forks to work with Database
+
+![ElkArte 1.1.x](https://img.shields.io/badge/ElkArte-1.1.x-green.svg?style=flat)
+![SMF 2.1.x](https://img.shields.io/badge/SMF-2.1.x-ed6033.svg?style=flat)
+![PHP](https://img.shields.io/badge/PHP-^8.0-blue.svg?style=flat)
+[![Coverage Status](https://coveralls.io/repos/github/dragomano/Forko/badge.svg?branch=master)](https://coveralls.io/github/dragomano/Forko?branch=master)
 
 ## Install
 
