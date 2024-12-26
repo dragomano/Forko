@@ -1,122 +1,137 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * WedgeAdapter.php
- *
  * @package Forko
  * @link https://github.com/dragomano/Forko
  * @author Bugo <bugo@dragomano.ru>
- * @copyright 2019-2023 Bugo
+ * @copyright 2019-2025 Bugo
  * @license https://github.com/dragomano/Forko/blob/master/LICENSE The MIT License
- *
- * @version 0.5.1
  */
 
 namespace Bugo\Forko\Adapters;
 
-use wesql;
-
-class WedgeAdapter extends AbstractAdapter
+class WedgeAdapter implements AdapterInterface
 {
-	/**
-	 * Wrapper to insert a new row into the specified table
-	 */
-	public function insert(string $table, array $fields = [], array $values = [], array $parameters = ['id'], bool $replace = false): bool|int
-	{
-		if (empty($fields) || empty($values))
-			return false;
+    public function __construct(protected mixed $db) {}
 
-		$this->db::insert($replace ? 'replace' : 'insert',
-			'{db_prefix}' . $table,
-			$fields,
-			$values
-		);
+    public function insert(
+        string $table,
+        array $fields = [],
+        array $values = [],
+        array $parameters = ['id'],
+        bool $replace = false
+    ): bool|int
+    {
+        if (empty($fields) || empty($values))
+            return false;
 
-		return $this->db::insert_id();
-	}
+        $this->db::insert($replace ? 'replace' : 'insert',
+            '{db_prefix}' . $table,
+            $fields,
+            $values
+        );
 
-	/**
-	 * Wrapper to display records from the specified table
-	 */
-	public function findAll(string $table, array $fields = [], string $conditions = '', array $parameters = [], string $join = '', string $order = '', string $limit = '', string $output = 'assoc'): mixed
-	{
-		$columns = empty($fields) ? '*' : implode(', ', $fields);
+        return $this->db::insert_id();
+    }
 
-		if (! empty($order)) {
-			$order = 'ORDER BY ' . $order;
-		}
+    public function findAll(
+        string $table,
+        array $fields = [],
+        string $conditions = '',
+        array $parameters = [],
+        string $join = '',
+        string $order = '',
+        string $limit = '',
+        string $output = 'assoc'
+    ): array|false|null
+    {
+        $columns = empty($fields) ? '*' : implode(', ', $fields);
 
-		if (! empty($limit)) {
-			$limit = 'LIMIT ' . $limit;
-		}
+        if (! empty($order)) {
+            $order = 'ORDER BY ' . $order;
+        }
 
-		$request = $this->db::query('
-			SELECT ' . $columns . '
-			FROM {db_prefix}' . $table . ($join ? '
-				' . $join : '') . ($conditions ? '
-			' . $conditions : '') . ($order ? '
-			' . $order : '') . ($limit ? '
-			' . $limit : ''),
-			$parameters
-		);
+        if (! empty($limit)) {
+            $limit = 'LIMIT ' . $limit;
+        }
 
-		if ($output === 'assoc') {
-			$result = [];
-			while ($row = $this->db::fetch_assoc($request))
-				$result[] = $row;
-		} else {
-			$result = $this->db::fetch_row($request);
-		}
+        $request = $this->db::query('
+            SELECT ' . $columns . '
+            FROM {db_prefix}' . $table . ($join ? '
+                ' . $join : '') . ($conditions ? '
+            ' . $conditions : '') . ($order ? '
+            ' . $order : '') . ($limit ? '
+            ' . $limit : ''),
+            $parameters
+        );
 
-		$this->db::free_result($request);
+        if ($output === 'assoc') {
+            $result = [];
+            while ($row = $this->db::fetch_assoc($request)) {
+                $result[] = $row;
+            }
+        } else {
+            $result = $this->db::fetch_row($request);
+        }
 
-		return $result;
-	}
+        $this->db::free_result($request);
 
-	/**
-	 * Wrapper to update records in the specified table
-	 */
-	public function update(string $table, array $fields = [], string $conditions = '', array $parameters = [], string $join = ''): bool|int
-	{
-		if (empty($fields))
-			return false;
+        return $result;
+    }
 
-		$columns = [];
-		foreach ($fields as $key => $value) {
-			$columns[] = "$key = $value";
-		}
+    public function findOne(
+        string $table,
+        array $fields = [],
+        string $conditions = '',
+        array $parameters = [],
+        string $join = '',
+        string $order = '',
+        string $output = 'assoc'
+    ): array|false|null
+    {
+        return $this->findAll($table, $fields, $conditions, $parameters, $join, $order, '1', $output);
+    }
 
-		$this->db::query('
-			UPDATE {db_prefix}' . $table . ($join ? '
-				' . $join : '') . '
-			SET ' . implode(', ', $columns) . ($conditions ? '
-			' . $conditions : ''),
-			$parameters
-		);
+    public function update(
+        string $table,
+        array $fields = [],
+        string $conditions = '',
+        array $parameters = [],
+        string $join = ''
+    ): bool|int
+    {
+        if (empty($fields))
+            return false;
 
-		return $this->db::affected_rows();
-	}
+        $columns = [];
+        foreach ($fields as $key => $value) {
+            $columns[] = "$key = $value";
+        }
 
-	/**
-	 * Wrapper to quickly delete records in a specified table
-	 */
-	public function delete(string $table, string $conditions = '', array $parameters = []): int
-	{
-		$this->db::query(/** @lang text */ '
+        $this->db::query('
+            UPDATE {db_prefix}' . $table . ($join ? '
+                ' . $join : '') . '
+            SET ' . implode(', ', $columns) . ($conditions ? '
+            ' . $conditions : ''),
+            $parameters
+        );
+
+        return $this->db::affected_rows();
+    }
+
+    public function delete(string $table, string $conditions = '', array $parameters = []): int
+    {
+        $this->db::query(/** @lang text */ '
 			DELETE FROM {db_prefix}' . $table . ($conditions ? '
 			' . $conditions : ''),
-			$parameters
-		);
+            $parameters
+        );
 
-		return $this->db::affected_rows();
-	}
+        return $this->db::affected_rows();
+    }
 
-	/**
-	 * Wrapper to process transactions
-	 * @string $type begin|rollback|commit
-	 */
-	public function transaction(string $type = 'commit'): bool
-	{
-		return (bool) $this->db::transaction($type);
-	}
+    public function transaction(string $type = 'commit'): bool
+    {
+        return (bool) $this->db::transaction($type);
+    }
 }
