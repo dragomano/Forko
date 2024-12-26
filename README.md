@@ -19,9 +19,9 @@ $obj = $smcFunc;
 
 // ... or Wedge
 $name = 'wedge';
-$obj = new wesql;
+$obj = new wesql();
 
-// ... or Elkarte
+// ... or ElkArte
 $name = 'elkarte';
 $obj = database();
 
@@ -35,8 +35,11 @@ $obj = $smcFunc['db'];
 
 // And now get the adapter
 $forko = new \Bugo\Forko\Forko($name);
-$adapter = '\Bugo\Forko\Adapters\\' . $forko->getAdapterName() . 'Adapter';
+$adapter = $forko->getAdapterName();
 $db = new $adapter($obj);
+
+// ... or you can call concrete adapter directly
+$db = new \Bugo\Forko\Adapters\SMFAdapter($obj);
 ```
 
 ```php
